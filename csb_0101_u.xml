@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="csb_0101_u">
+	<select id="s01" resultType="java.util.HashMap">
+		WITH FIND_DATA AS (
+		    SELECT *
+		    FROM(
+		        SELECT  CD
+		            ,UP_CD
+		            ,CD_NM
+		            ,CD_ABBR_NM
+		            ,USE_YN
+		            ,SORT_SEQ
+		            ,RMARK
+		            ,SUPLMT_INFO
+		            ,SYS_CONNECT_BY_PATH(CD,':') AS CD_PATH
+		            ,SYS_CONNECT_BY_PATH(ROWNUM,':') AS RN_PATH
+		            ,LEVEL AS LVL
+		        FROM EZ_SYSCD_M
+		        START WITH UP_CD = 'SYSTEM'
+		        CONNECT BY PRIOR NVL2(UP_CD, UP_CD||':', NULL)|| PRIOR CD = UP_CD
+		        ORDER SIBLINGS BY SORT_SEQ,UP_CD,CD
+		    )
+		    <where>
+		    	<if test="CODE != null">
+		    		AND (
+		    			CD LIKE '%'||#{CODE}||'%'
+		    			OR
+		    			CD_NM LIKE '%'||#{CODE}||'%'
+		    		)
+		    	</if>
+		    </where>
+		),
+		FULL_DATA AS (
+		    SELECT CD
+		        , RN
+		        , LVL
+		        , UP_CD
+		    FROM (
+		        SELECT REGEXP_SUBSTR(A.CD_PATH,'[^:]+',1,B.LVL) AS CD
+		            ,TO_NUMBER(REGEXP_SUBSTR(A.RN_PATH,'[^:]+',1,B.LVL)) AS RN
+		            ,B.LVL AS LVL
+		            ,A.UP_CD AS UP_CD
+		        FROM FIND_DATA A
+		        CROSS JOIN (
+		            SELECT LEVEL AS LVL
+		            FROM(
+		                SELECT MAX(LVL) AS MAX_LVL
+		                FROM FIND_DATA
+		            )
+		            CONNECT BY LEVEL &lt;= MAX_LVL
+		        )B
+		    )
+		    GROUP BY CD,RN,LVL,UP_CD
+		)
+		SELECT 'SYSTEM' AS CD
+		    ,NULL AS UP_CD
+		    ,'SYSTEM' AS CD_NM
+		    ,'SYSTEM' AS CD_ABBR_NM
+		    ,'1' AS USE_YN
+		    ,0 AS SORT_SEQ
+		    ,NULL AS RMARK
+		    ,NULL AS SUPLMT_INFO
+		    ,0 AS LVL
+		    ,-1 AS RN
+		    ,'0' AS EDITABLE
+		FROM DUAL
+		UNION ALL
+		SELECT *
+		FROM (
+		    SELECT A.CD
+		        ,A.UP_CD
+		        ,A.CD_NM
+		        ,A.CD_ABBR_NM
+		        ,A.USE_YN
+		        ,A.SORT_SEQ
+		        ,A.RMARK
+		        ,A.SUPLMT_INFO
+		        ,B.LVL
+		        ,B.RN
+		        ,'1' AS EDITABLE
+		    FROM EZ_SYSCD_M A
+		    JOIN FULL_DATA B
+		    ON A.CD = B.CD
+		    AND A.UP_CD = B.UP_CD
+		    ORDER BY B.RN
+		)
+    </select>
+    <insert id="i01">
+    	INSERT INTO EZ_SYSCD_M (
+			CD
+			,UP_CD
+			,CD_NM
+			,CD_ABBR_NM
+			,USE_YN
+			,SORT_SEQ
+			,RMARK
+			,SUPLMT_INFO
+			,REGID
+			,REGDT
+			,REGIP
+			,REGMENU
+			,REGPGM
+			,MODID
+			,MODDT
+			,MODIP
+			,MODMENU
+			,MODPGM
+		) VALUES (
+			#{CD}
+			,#{UP_CD}
+			,#{CD_NM}
+			,#{CD_ABBR_NM}
+			,#{USE_YN}
+			,#{SORT_SEQ}
+			,#{RMARK}
+			,#{SUPLMT_INFO}
+			,#{_USER_INFO.USER_ID}
+			,SYSDATE
+			,#{_USER_INFO.USER_IP}
+			,#{_PROG_INFO.MENU_ID}
+			,#{_PROG_INFO.PGM_PATH}
+			,#{_USER_INFO.USER_ID}
+			,SYSDATE
+			,#{_USER_INFO.USER_IP}
+			,#{_PROG_INFO.MENU_ID}
+			,#{_PROG_INFO.PGM_PATH}
+		)
+    </insert>
+    <update id="u01">
+    	UPDATE EZ_SYSCD_M
+		SET CD_NM=#{CD_NM}
+			,CD_ABBR_NM=#{CD_ABBR_NM}
+			,USE_YN=#{USE_YN}
+			,SORT_SEQ=#{SORT_SEQ}
+			,RMARK=#{RMARK}
+			,SUPLMT_INFO=#{SUPLMT_INFO}
+			,MODID=#{_USER_INFO.USER_ID}
+			,MODDT=SYSDATE
+			,MODIP=#{_USER_INFO.USER_IP}
+			,MODMENU=#{_PROG_INFO.MENU_ID}
+			,MODPGM=#{_PROG_INFO.PGM_PATH}
+		WHERE CD=#{CD}
+		AND UP_CD=#{UP_CD}
+    </update>
+    <delete id="d01">
+    	DELETE FROM EZ_SYSCD_M
+		WHERE CD=#{CD}
+		AND UP_CD=#{UP_CD}
+    </delete>
+</mapper>

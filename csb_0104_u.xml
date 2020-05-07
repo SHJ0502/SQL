@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="csb_0104_u">
+	<resultMap id="rm01" type="map">
+		<result property="MSSAGE" column="MSSAGE" javaType="java.lang.String" jdbcType="CLOB"/>
+	</resultMap>	
+	<!-- 한글 리스트 조회 -->
+	<select id="s01" resultMap="csb_0104_u.rm01">
+		SELECT MSSAGE_CD
+			 , MSSAGE
+		FROM EZ_I18N_MSG_M
+		WHERE LANG_CD = 'ko_KR'
+		ORDER BY MSSAGE_CD
+    </select>
+    <select id="s02" resultMap="csb_0104_u.rm01">
+    	SELECT A.LANG_CD
+			,#{MSSAGE_CD} AS MSSAGE_CD
+			,B.MSSAGE
+			,B.RMARK AS RMARK
+		FROM (
+			SELECT A.CD AS LANG_CD
+				,A.SORT_SEQ
+			FROM EZ_SYSCD_M A
+			WHERE A.UP_CD = 'SYSTEM:LNG'
+			AND A.USE_YN = 1
+		) A
+		LEFT JOIN EZ_I18N_MSG_M B
+		ON A.LANG_CD = B.LANG_CD
+		AND B.MSSAGE_CD = #{MSSAGE_CD}
+		ORDER BY A.SORT_SEQ, A.LANG_CD
+    </select>
+    <insert id="i01">
+    	INSERT INTO EZ_I18N_MSG_M (
+			LANG_CD
+			,MSSAGE_CD
+			,MSSAGE
+			,RMARK
+			,REGID
+			,REGDT
+			,REGIP
+			,REGMENU
+			,REGPGM
+			,MODID
+			,MODDT
+			,MODIP
+			,MODMENU
+			,MODPGM
+		) VALUES (
+			'ko_KR'
+			,#{MSSAGE_CD}
+			,' '
+			,''
+			,#{_USER_INFO.USER_ID}
+			,SYSDATE
+			,#{_USER_INFO.USER_IP}
+			,#{_PROG_INFO.MENU_ID}
+			,#{_PROG_INFO.PGM_PATH}
+			,#{_USER_INFO.USER_ID}
+			,SYSDATE
+			,#{_USER_INFO.USER_IP}
+			,#{_PROG_INFO.MENU_ID}
+			,#{_PROG_INFO.PGM_PATH}
+		)
+    </insert>
+    <update id="u01">
+    	MERGE INTO EZ_I18N_MSG_M
+    		USING DUAL
+    		ON (LANG_CD = #{LANG_CD} AND MSSAGE_CD = #{MSSAGE_CD})
+    	WHEN MATCHED THEN
+    		UPDATE
+    		SET MSSAGE=#{MSSAGE}
+    			,RMARK=#{RMARK}
+				,MODID=#{_USER_INFO.USER_ID}
+				,MODDT=SYSDATE
+				,MODIP=#{_USER_INFO.USER_IP}
+				,MODMENU=#{_PROG_INFO.MENU_ID}
+				,MODPGM=#{_PROG_INFO.PGM_PATH}
+		WHEN NOT MATCHED THEN
+			INSERT (
+				LANG_CD
+				,MSSAGE_CD
+				,MSSAGE
+				,RMARK
+				,REGID
+				,REGDT
+				,REGIP
+				,REGMENU
+				,REGPGM
+				,MODID
+				,MODDT
+				,MODIP
+				,MODMENU
+				,MODPGM
+			) VALUES (
+				#{LANG_CD}
+				,#{MSSAGE_CD}
+				,#{MSSAGE}
+				,#{RMARK}
+				,#{_USER_INFO.USER_ID}
+				,SYSDATE
+				,#{_USER_INFO.USER_IP}
+				,#{_PROG_INFO.MENU_ID}
+				,#{_PROG_INFO.PGM_PATH}
+				,#{_USER_INFO.USER_ID}
+				,SYSDATE
+				,#{_USER_INFO.USER_IP}
+				,#{_PROG_INFO.MENU_ID}
+				,#{_PROG_INFO.PGM_PATH}
+			)
+    </update>
+    <delete id="d01">
+    	DELETE FROM EZ_I18N_MSG_M
+		WHERE MSSAGE_CD=#{MSSAGE_CD}
+    </delete>
+</mapper>

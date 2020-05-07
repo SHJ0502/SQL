@@ -1,0 +1,582 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="csb_0104_u_example_02">
+
+	<!-- 공통코드 조회 -->
+	<select id="sUP" resultType="java.util.HashMap">
+		SELECT 
+			CD
+			,UP_CD
+			,CD_NM
+			,CD_ABBR_NM
+			,CD_ENG_NM
+			,CD_ENG_ABBR_NM
+			
+			,KORUS_CD
+			,OLD_CD
+			,USE_YN
+			,SORT_SEQ
+			,RMARK
+			,SUPLMT_INFO_1
+			,SUPLMT_INFO_2
+			,SUPLMT_INFO_3
+			,SUPLMT_INFO_4
+			,SUPLMT_INFO_5
+			,SUPLMT_INFO_6
+			,SUPLMT_INFO_7
+			,SUPLMT_INFO_8
+			,SUPLMT_INFO_9
+			,SUPLMT_INFO_10
+		FROM 
+			TEST_COMN_CD_M_T05
+		where
+			UP_CD = 'SYSTEM'
+	
+	</select>
+
+
+	<select id="s01" resultType="java.util.HashMap">
+		SELECT CD
+			,UP_CD
+			,CD_NM
+			,CD_ABBR_NM
+			,CD_ENG_NM
+			,CD_ENG_ABBR_NM			
+			,KORUS_CD
+			,OLD_CD
+			,USE_YN
+			,SORT_SEQ
+			,RMARK
+			,SUPLMT_INFO_1
+			,SUPLMT_INFO_2
+			,SUPLMT_INFO_3
+			,SUPLMT_INFO_4
+			,SUPLMT_INFO_5
+			,SUPLMT_INFO_6
+			,SUPLMT_INFO_7
+			,SUPLMT_INFO_8
+			,SUPLMT_INFO_9
+			,SUPLMT_INFO_10
+		FROM TEST_COMN_CD_M_T05
+		<where>
+			<if test="CD != null and CD != ''">
+				AND CD = #{CD}
+			</if>
+			<if test="UP_CD != null and UP_CD != ''">
+				AND UP_CD = #{UP_CD}
+				
+			</if>
+			<if test="UP_CD == null or UP_CD == ''">
+				AND UP_CD = #{UP_CD}
+				
+			</if>
+			<if test="KEY_WORD != null and KEY_WORD != ''">
+				AND (
+					CD LIKE '%'||#{KEY_WORD}||'%'
+					OR
+					CD_NM LIKE '%'||#{KEY_WORD}||'%'
+				)
+			</if>
+			<if test="USE_YN != null and USE_YN != ''">
+				AND USE_YN = #{USE_YN}
+			</if>
+		</where>
+		ORDER BY UP_CD, SORT_SEQ, CD
+    </select>
+    
+    <select id="s02" resultType="java.util.HashMap">
+    	SELECT
+    		 A.CD				AS UP_CD
+			,A.UP_CD			AS UP_UP_CD
+			,A.CD_NM			AS UP_CD_NM
+			,A.CD_ABBR_NM		AS UP_CD_ABBR_NM
+			,A.CD_ENG_NM		AS UP_CD_ENG_NM
+			,A.CD_ENG_ABBR_NM	AS UP_CD_ENG_ABBR_NM
+			
+			,A.KORUS_CD			AS KORUS_UP_CD
+			,A.OLD_CD			AS OLD_UP_CD
+			,A.USE_YN			AS UP_CD_USE_YN
+			,A.SORT_SEQ			AS UP_CD_SORT_SEQ
+			,A.RMARK			AS UP_CD_RMARK
+			,A.SUPLMT_INFO_1	AS UP_CD_SUPLMT_INFO_1
+			,A.SUPLMT_INFO_2	AS UP_CD_SUPLMT_INFO_2
+			,A.SUPLMT_INFO_3	AS UP_CD_SUPLMT_INFO_3
+			,A.SUPLMT_INFO_4	AS UP_CD_SUPLMT_INFO_4
+			,A.SUPLMT_INFO_5	AS UP_CD_SUPLMT_INFO_5
+			,A.SUPLMT_INFO_6	AS UP_CD_SUPLMT_INFO_6
+			,A.SUPLMT_INFO_7	AS UP_CD_SUPLMT_INFO_7
+			,A.SUPLMT_INFO_8	AS UP_CD_SUPLMT_INFO_8
+			,A.SUPLMT_INFO_9	AS UP_CD_SUPLMT_INFO_9
+			,A.SUPLMT_INFO_10	AS UP_CD_SUPLMT_INFO_10
+			
+			,B.CD				AS CD
+			,B.UP_CD			AS UP_CD_DETAIL
+			,B.CD_NM			AS CD_NM
+			,B.CD_ABBR_NM		AS CD_ABBR_NM
+			,B.CD_ENG_NM		AS CD_ENG_NM
+			,B.CD_ENG_ABBR_NM	AS CD_ENG_ABBR_NM
+			
+			,B.KORUS_CD			AS KORUS_CD
+			,B.OLD_CD			AS OLD_CD
+			,B.USE_YN			AS USE_YN
+			,B.SORT_SEQ			AS SORT_SEQ
+			,B.RMARK			AS RMARK
+			,B.SUPLMT_INFO_1	AS SUPLMT_INFO_1
+			,B.SUPLMT_INFO_2	AS SUPLMT_INFO_2
+			,B.SUPLMT_INFO_3	AS SUPLMT_INFO_3
+			,B.SUPLMT_INFO_4	AS SUPLMT_INFO_4
+			,B.SUPLMT_INFO_5	AS SUPLMT_INFO_5
+			,B.SUPLMT_INFO_6	AS SUPLMT_INFO_6
+			,B.SUPLMT_INFO_7	AS SUPLMT_INFO_7
+			,B.SUPLMT_INFO_8	AS SUPLMT_INFO_8
+			,B.SUPLMT_INFO_9	AS SUPLMT_INFO_9
+			,B.SUPLMT_INFO_10	AS SUPLMT_INFO_10
+			
+		FROM 
+			TEST_COMN_CD_M_T05 A LEFT OUTER JOIN TEST_COMN_CD_M_T05 B 
+		ON 
+			A.CD = B.UP_CD
+		<where>
+			<if test="CD != null and CD != ''">
+				AND A.CD = #{CD}
+			</if>
+			<if test="UP_CD != null and UP_CD != ''">
+				AND A.UP_CD = #{UP_CD}
+			</if>
+			<if test="UP_CD == null or UP_CD == ''">
+				AND
+					A.UP_CD = 'SYSTEM'
+				AND(
+					A.CD LIKE '%'||#{KEY_WORD}||'%' 
+				OR
+					A.CD_NM LIKE '%'||#{KEY_WORD}||'%'
+				OR
+					B.CD LIKE '%'||#{KEY_WORD}||'%'
+				OR
+					B.CD_NM LIKE '%'||#{KEY_WORD}||'%'
+					) 
+			</if>
+			<if test="KEY_WORD != null and KEY_WORD != ''">
+				<!-- AND (
+					A.CD LIKE '%'||#{KEY_WORD}||'%'
+					OR
+					A.CD_NM LIKE '%'||#{KEY_WORD}||'%'
+				) -->
+			</if>
+			<if test="USE_YN != null and USE_YN != ''">
+				AND A.USE_YN = #{USE_YN}
+			</if>
+		</where>
+		ORDER BY A.UP_CD, A.SORT_SEQ, A.CD
+    </select>
+    
+        <!-- 상세코드 조회 -->
+     <select id="s03" resultType="java.util.HashMap">
+		SELECT CD
+			,UP_CD
+			,CD_NM
+			,CD_ABBR_NM
+			,CD_ENG_NM
+			,CD_ENG_ABBR_NM
+			
+			,KORUS_CD
+			,OLD_CD
+			,USE_YN
+			,SORT_SEQ
+			,RMARK
+			,SUPLMT_INFO_1
+			,SUPLMT_INFO_2
+			,SUPLMT_INFO_3
+			,SUPLMT_INFO_4
+			,SUPLMT_INFO_5
+			,SUPLMT_INFO_6
+			,SUPLMT_INFO_7
+			,SUPLMT_INFO_8
+			,SUPLMT_INFO_9
+			,SUPLMT_INFO_10
+		FROM TEST_COMN_CD_M_T05
+		<where>
+			<if test="CD != null and CD != ''">
+				AND CD = #{CD}
+			</if>
+			<if test="UP_CD != null and UP_CD != ''">
+				AND UP_CD = #{UP_CD}
+				
+			</if>
+			<if test="TASK_DSTNCT_CD != null and TASK_DSTNCT_CD != ''">
+				AND TASK_DSTNCT_CD = #{TASK_DSTNCT_CD}
+			</if>
+			<if test="UP_CD == null or UP_CD == ''">
+				AND UP_CD = #{UP_CD}
+				
+			</if>
+			<if test="KEY_WORD != null and KEY_WORD != ''">
+				AND (
+					CD LIKE '%'||#{KEY_WORD}||'%'
+					OR
+					CD_NM LIKE '%'||#{KEY_WORD}||'%'
+				)
+			</if>
+			<if test="USE_YN != null and USE_YN != ''">
+				AND USE_YN = #{USE_YN}
+			</if>
+		</where>
+		ORDER BY UP_CD, SORT_SEQ, CD
+    </select>
+	<!-- 사용 공통코드 조회 -->
+	<select id="s04" resultType="java.util.HashMap">
+		select
+			CD
+     		,UP_CD
+			,CD_NM
+			,CD_ABBR_NM
+			,CD_ENG_NM
+			,CD_ENG_ABBR_NM
+			
+			,KORUS_CD
+			,OLD_CD
+			,USE_YN
+			,SORT_SEQ
+			,RMARK
+			,SUPLMT_INFO_1
+			,SUPLMT_INFO_2
+			,SUPLMT_INFO_3
+			,SUPLMT_INFO_4
+			,SUPLMT_INFO_5
+			,SUPLMT_INFO_6
+			,SUPLMT_INFO_7
+			,SUPLMT_INFO_8
+			,SUPLMT_INFO_9
+			,SUPLMT_INFO_10
+     	from
+     		TEST_COMN_CD_M_T05
+     	where
+     		USE_YN = '1'
+     	AND
+     		UP_CD = 'SYSTEM'
+     	AND
+     		CD = #{CD}
+	</select>
+	
+	
+	<!-- 미사용 공통코드 조회 -->
+	<select id="s05" resultType="java.util.HashMap">
+		select
+			CD
+     		,UP_CD
+			,CD_NM
+			,CD_ABBR_NM
+			,CD_ENG_NM
+			,CD_ENG_ABBR_NM
+			
+			,KORUS_CD
+			,OLD_CD
+			,USE_YN
+			,SORT_SEQ
+			,RMARK
+			,SUPLMT_INFO_1
+			,SUPLMT_INFO_2
+			,SUPLMT_INFO_3
+			,SUPLMT_INFO_4
+			,SUPLMT_INFO_5
+			,SUPLMT_INFO_6
+			,SUPLMT_INFO_7
+			,SUPLMT_INFO_8
+			,SUPLMT_INFO_9
+			,SUPLMT_INFO_10
+     	from
+     		TEST_COMN_CD_M_T05
+     	where
+     		USE_YN = '0'
+     	AND
+     		UP_CD = 'SYSTEM'
+	</select>
+    
+    <!-- 상세코드추가 -->
+    <insert id="i01">
+    	INSERT INTO TEST_COMN_CD_M_T05 (
+			CD
+			,UP_CD
+			,CD_NM
+			,CD_ABBR_NM
+			,CD_ENG_NM
+			,CD_ENG_ABBR_NM
+			
+			,KORUS_CD
+			,OLD_CD
+			,USE_YN
+			,SORT_SEQ
+			,RMARK
+			,SUPLMT_INFO_1
+			,SUPLMT_INFO_2
+			,SUPLMT_INFO_3
+			,SUPLMT_INFO_4
+			,SUPLMT_INFO_5
+			,SUPLMT_INFO_6	
+			,SUPLMT_INFO_7
+			,SUPLMT_INFO_8
+			,SUPLMT_INFO_9
+			,SUPLMT_INFO_10
+			,REGID
+			,REGDT
+			,REGIP
+			,REGMENU
+			,REGPGM	
+			,MODID
+			,MODDT
+			,MODIP
+			,MODMENU
+			,MODPGM
+		) VALUES (
+			#{CD}
+			,#{UP_CD}
+			,#{CD_NM}
+			,#{CD_ABBR_NM}
+			,#{CD_ENG_NM}
+			,#{CD_ENG_ABBR_NM}
+			,#{TASK_DSTNCT_CD}
+			,#{KORUS_CD}
+			,#{OLD_CD}
+			,#{USE_YN}
+			,#{SORT_SEQ}
+			,#{RMARK}
+			,#{SUPLMT_INFO_1}
+			,#{SUPLMT_INFO_2}
+			,#{SUPLMT_INFO_3}
+			,#{SUPLMT_INFO_4}
+			,#{SUPLMT_INFO_5}
+			,#{SUPLMT_INFO_6}
+			,#{SUPLMT_INFO_7}
+			,#{SUPLMT_INFO_8}
+			,#{SUPLMT_INFO_9}
+			,#{SUPLMT_INFO_10}
+			,#{_USER_INFO.USER_ID}
+         	,SYSDATE
+  	       	,#{_USER_INFO.USER_IP}
+   	      	,#{_PROG_INFO.MENU_ID}
+         	,#{_PROG_INFO.PGM_PATH}
+         	,#{_USER_INFO.USER_ID}
+         	,SYSDATE
+         	,#{_USER_INFO.USER_IP}
+         	,#{_PROG_INFO.MENU_ID}
+         	,#{_PROG_INFO.PGM_PATH}
+		)
+    </insert>
+    
+    <!-- 공통코드 추가 -->
+    <insert id="i02">
+    	INSERT INTO TEST_COMN_CD_M_T05 (
+    		CD
+			,UP_CD
+			,CD_NM
+			,CD_ABBR_NM
+			,CD_ENG_NM
+			,CD_ENG_ABBR_NM
+			
+			,KORUS_CD
+			,OLD_CD
+			,USE_YN
+			,SORT_SEQ
+			,RMARK
+			,SUPLMT_INFO_1
+			,SUPLMT_INFO_2
+			,SUPLMT_INFO_3
+			,SUPLMT_INFO_4
+			,SUPLMT_INFO_5
+			,SUPLMT_INFO_6	
+			,SUPLMT_INFO_7
+			,SUPLMT_INFO_8
+			,SUPLMT_INFO_9
+			,SUPLMT_INFO_10
+			,REGID
+			,REGDT
+			,REGIP
+			,REGMENU
+			,REGPGM	
+			,MODID
+			,MODDT
+			,MODIP
+			,MODMENU
+			,MODPGM
+    	) VALUES (
+			#{UP_CD}
+			,'SYSTEM'
+			,#{UP_CD_NM}
+			,#{UP_CD_ABBR_NM}
+			,#{UP_CD_ENG_NM}
+			,#{UP_CD_ENG_ABBR_NM}
+			,#{TASK_DSTNCT_UP_CD}
+			,#{KORUS_UP_CD}
+			,#{OLD_UP_CD}
+			,#{UP_CD_USE_YN}
+			,#{UP_CD_SORT_SEQ}
+			,#{UP_CD_RMARK}
+			,#{UP_CD_SUPLMT_INFO_1}
+			,#{UP_CD_SUPLMT_INFO_2}
+			,#{UP_CD_SUPLMT_INFO_3}
+			,#{UP_CD_SUPLMT_INFO_4}
+			,#{UP_CD_SUPLMT_INFO_5}
+			,#{UP_CD_SUPLMT_INFO_6}
+			,#{UP_CD_SUPLMT_INFO_7}
+			,#{UP_CD_SUPLMT_INFO_8}
+			,#{UP_CD_SUPLMT_INFO_9}
+			,#{UP_CD_SUPLMT_INFO_10}
+			,#{_USER_INFO.USER_ID}
+         	,SYSDATE
+  	       	,#{_USER_INFO.USER_IP}
+   	      	,#{_PROG_INFO.MENU_ID}
+         	,#{_PROG_INFO.PGM_PATH}
+         	,#{_USER_INFO.USER_ID}
+         	,SYSDATE
+         	,#{_USER_INFO.USER_IP}
+         	,#{_PROG_INFO.MENU_ID}
+         	,#{_PROG_INFO.PGM_PATH}
+		)
+    </insert>
+    
+    <!-- 상세정보 수정 -->
+    <update id="u01">
+    	UPDATE TEST_COMN_CD_M_T05
+		SET 
+			 CD =#{CD}
+			,CD_NM=#{CD_NM}
+			,CD_ABBR_NM=#{CD_ABBR_NM}
+			,CD_ENG_NM=#{CD_ENG_NM}
+			,CD_ENG_ABBR_NM=#{CD_ENG_ABBR_NM}
+			
+			,KORUS_CD=#{KORUS_CD}
+			,OLD_CD=#{OLD_CD}
+			,USE_YN=#{USE_YN}
+			,SORT_SEQ=#{SORT_SEQ}
+			,RMARK=#{RMARK}
+			,SUPLMT_INFO_1=#{SUPLMT_INFO_1}
+			,SUPLMT_INFO_2=#{SUPLMT_INFO_2}
+			,SUPLMT_INFO_3=#{SUPLMT_INFO_3}
+			,SUPLMT_INFO_4=#{SUPLMT_INFO_4}
+			,SUPLMT_INFO_5=#{SUPLMT_INFO_5}
+			,SUPLMT_INFO_6=#{SUPLMT_INFO_6}
+			,SUPLMT_INFO_7=#{SUPLMT_INFO_7}
+			,SUPLMT_INFO_8=#{SUPLMT_INFO_8}
+			,SUPLMT_INFO_9=#{SUPLMT_INFO_9}
+			,SUPLMT_INFO_10=#{SUPLMT_INFO_10}
+			,MODID=#{_USER_INFO.USER_ID}
+	        ,MODDT=SYSDATE
+	        ,MODIP=#{_USER_INFO.USER_IP}
+	        ,MODMENU=#{_PROG_INFO.MENU_ID}
+	        ,MODPGM=#{_PROG_INFO.PGM_PATH}
+		WHERE CD=#{CD}
+		AND UP_CD=#{UP_CD_DETAIL}
+    </update>
+    
+    <!-- 공통코드 수정 -->
+    <update id="u02">
+    	UPDATE TEST_COMN_CD_M_T05
+    	SET 
+    		 CD=#{UP_CD}
+    		,CD_NM=#{UP_CD_NM}
+			,CD_ABBR_NM=#{UP_CD_ABBR_NM}
+			,CD_ENG_NM=#{UP_CD_ENG_NM}
+			,CD_ENG_ABBR_NM=#{UP_CD_ENG_ABBR_NM}
+			
+			,KORUS_CD=#{KORUS_UP_CD}
+			,OLD_CD=#{OLD_UP_CD}
+			,USE_YN=#{UP_CD_USE_YN}
+			,SORT_SEQ=#{UP_CD_SORT_SEQ}
+			,RMARK=#{UP_CD_RMARK}
+			,SUPLMT_INFO_1=#{UP_CD_SUPLMT_INFO_1}
+			,SUPLMT_INFO_2=#{UP_CD_SUPLMT_INFO_2}
+			,SUPLMT_INFO_3=#{UP_CD_SUPLMT_INFO_3}
+			,SUPLMT_INFO_4=#{UP_CD_SUPLMT_INFO_4}
+			,SUPLMT_INFO_5=#{UP_CD_SUPLMT_INFO_5}
+			,SUPLMT_INFO_6=#{UP_CD_SUPLMT_INFO_6}
+			,SUPLMT_INFO_7=#{UP_CD_SUPLMT_INFO_7}
+			,SUPLMT_INFO_8=#{UP_CD_SUPLMT_INFO_8}
+			,SUPLMT_INFO_9=#{UP_CD_SUPLMT_INFO_9}
+			,SUPLMT_INFO_10=#{UP_CD_SUPLMT_INFO_10}
+			,MODID=#{_USER_INFO.USER_ID}
+	        ,MODDT=SYSDATE
+	        ,MODIP=#{_USER_INFO.USER_IP}
+	        ,MODMENU=#{_PROG_INFO.MENU_ID}
+	        ,MODPGM=#{_PROG_INFO.PGM_PATH}
+	    WHERE CD=#{UP_CD}
+		AND UP_CD=#{UP_UP_CD}
+    </update>
+    
+    
+    
+    <!-- 그리드 콤보박스 수정 -->
+    <update id="u11"> 
+    	update 
+    		TEST_COMN_CD_M_T05
+    	set
+    		
+    		SUPLMT_INFO_5=#{SUPLMT_INFO_5}
+    		
+    		,SUPLMT_INFO_6=#{SUPLMT_INFO_6}
+    		
+    		,SUPLMT_INFO_7=#{SUPLMT_INFO_7}
+    		
+    		,SUPLMT_INFO_8=#{SUPLMT_INFO_8}
+    		
+    		,SUPLMT_INFO_9=#{SUPLMT_INFO_9}
+    		
+		where 
+			UP_CD = #{UP_CD}
+			and CD = #{CD}
+			
+    </update>
+    
+     <update id="u04"> 
+    	update 
+    		TEST_COMN_CD_M_T05
+    	set
+			USE_YN= 0	
+		where 
+			UP_CD = #{UP_CD}
+		and
+			CD = #{CD}
+    </update>
+    
+    <!-- 상세코드 삭제 -->
+    <delete id="d01">
+    	DELETE FROM TEST_COMN_CD_M_T05
+    	<where>
+    		AND (CD = #{CD} AND UP_CD = #{UP_CD_DETAIL})
+    	</where>
+    </delete>
+    
+ 	<!-- 공통코드 삭제 -->
+    <delete id="d02">
+    	DELETE FROM TEST_COMN_CD_M_T05
+    	<where>
+    		AND (CD = #{UP_CD} AND UP_CD = #{UP_UP_CD})
+    	</where>
+    </delete>
+    
+    <!-- 콤보박스 sql -->
+    <select id="cb01" resultType="java.util.HashMap">
+		SELECT CD
+			,UP_CD
+			,CD_ENG_NM
+			,SUPLMT_INFO_2
+			,(case when #{isCk} = '1' then CD || ' - ' || CD_NM
+				  when #{isCk} = '2' then CD_NM
+				  when #{isCk} = '3' then CD_ENG_NM
+				  end) as B
+		FROM TEST_COMN_CD_M_T05
+		<where>
+			UP_CD=#{UP_CD}
+			<if test="CD != null">
+				AND CD=#{CD}
+			</if>
+			<if test="CD_NM != null">
+				AND CD_NM = #{CD_NM}
+			</if>
+			<if test="SUPLMT_INFO != null">
+				AND SUPLMT_INFO_2 = #{SUPLMT_INFO}
+			</if>
+		</where>
+    </select>
+    
+
+</mapper>

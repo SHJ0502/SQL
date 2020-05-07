@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="csb_0102_u">
+	<select id="s01" resultType="java.util.HashMap">
+		SELECT CD
+			,UP_CD
+			,CD_NM
+			,CD_ABBR_NM
+			,CD_ENG_NM
+			,CD_ENG_ABBR_NM
+			,TASK_DSTNCT_CD
+			,KORUS_CD
+			,OLD_CD
+			,USE_YN
+			,SORT_SEQ
+			,RMARK
+			,SUPLMT_INFO_1
+			,SUPLMT_INFO_2
+			,SUPLMT_INFO_3
+			,SUPLMT_INFO_4
+			,SUPLMT_INFO_5
+			,SUPLMT_INFO_6
+			,SUPLMT_INFO_7
+			,SUPLMT_INFO_8
+			,SUPLMT_INFO_9
+			,SUPLMT_INFO_10
+		FROM EZ_COMN_CD_M
+		<where>
+			<if test="CD != null and CD != ''">
+				AND CD = #{CD}
+			</if>
+			<if test="UP_CD != null and UP_CD != ''">
+				AND UP_CD = #{UP_CD}
+			</if>
+			<if test="TASK_DSTNCT_CD != null and TASK_DSTNCT_CD != ''">
+				AND TASK_DSTNCT_CD = #{TASK_DSTNCT_CD}
+			</if>
+			<if test="UP_CD == null or UP_CD == ''">
+				AND UP_CD = 'SYSTEM'
+			</if>
+			<if test="KEY_WORD != null and KEY_WORD != ''">
+				AND (
+					CD LIKE '%'||#{KEY_WORD}||'%'
+					OR
+					CD_NM LIKE '%'||#{KEY_WORD}||'%'
+				)
+			</if>
+			<if test="USE_YN != null and USE_YN != ''">
+				AND USE_YN = #{USE_YN}
+			</if>
+		</where>
+		ORDER BY UP_CD, SORT_SEQ, CD
+    </select>
+    <insert id="i01">
+    	INSERT INTO EZ_COMN_CD_M (
+			CD
+			,UP_CD
+			,CD_NM
+			,CD_ABBR_NM
+			,CD_ENG_NM
+			,CD_ENG_ABBR_NM
+			,TASK_DSTNCT_CD
+			,KORUS_CD
+			,OLD_CD
+			,USE_YN
+			,SORT_SEQ
+			,RMARK
+			,SUPLMT_INFO_1
+			,SUPLMT_INFO_2
+			,SUPLMT_INFO_3
+			,SUPLMT_INFO_4
+			,SUPLMT_INFO_5
+			,SUPLMT_INFO_6
+			,SUPLMT_INFO_7
+			,SUPLMT_INFO_8
+			,SUPLMT_INFO_9
+			,SUPLMT_INFO_10
+			,REGID
+	        ,REGDT
+	        ,REGIP
+	        ,REGMENU
+	        ,REGPGM
+	        ,MODID
+	        ,MODDT
+	        ,MODIP
+	        ,MODMENU
+	        ,MODPGM
+		) VALUES (
+			#{CD}
+			,#{UP_CD}
+			,#{CD_NM}
+			,#{CD_ABBR_NM}
+			,#{CD_ENG_NM}
+			,#{CD_ENG_ABBR_NM}
+			,#{TASK_DSTNCT_CD}
+			,#{KORUS_CD}
+			,#{OLD_CD}
+			,#{USE_YN}
+			,#{SORT_SEQ}
+			,#{RMARK}
+			,#{SUPLMT_INFO_1}
+			,#{SUPLMT_INFO_2}
+			,#{SUPLMT_INFO_3}
+			,#{SUPLMT_INFO_4}
+			,#{SUPLMT_INFO_5}
+			,#{SUPLMT_INFO_6}
+			,#{SUPLMT_INFO_7}
+			,#{SUPLMT_INFO_8}
+			,#{SUPLMT_INFO_9}
+			,#{SUPLMT_INFO_10}
+			,#{_USER_INFO.USER_ID}
+         	,SYSDATE
+  	       	,#{_USER_INFO.USER_IP}
+   	      	,#{_PROG_INFO.MENU_ID}
+         	,#{_PROG_INFO.PGM_PATH}
+         	,#{_USER_INFO.USER_ID}
+         	,SYSDATE
+         	,#{_USER_INFO.USER_IP}
+         	,#{_PROG_INFO.MENU_ID}
+         	,#{_PROG_INFO.PGM_PATH}
+		)
+    </insert>
+    <update id="u01">
+    	UPDATE EZ_COMN_CD_M
+		SET CD_NM=#{CD_NM}
+			,CD_ABBR_NM=#{CD_ABBR_NM}
+			,CD_ENG_NM=#{CD_ENG_NM}
+			,CD_ENG_ABBR_NM=#{CD_ENG_ABBR_NM}
+			,TASK_DSTNCT_CD=#{TASK_DSTNCT_CD}
+			,KORUS_CD=#{KORUS_CD}
+			,OLD_CD=#{OLD_CD}
+			,USE_YN=#{USE_YN}
+			,SORT_SEQ=#{SORT_SEQ}
+			,RMARK=#{RMARK}
+			,SUPLMT_INFO_1=#{SUPLMT_INFO_1}
+			,SUPLMT_INFO_2=#{SUPLMT_INFO_2}
+			,SUPLMT_INFO_3=#{SUPLMT_INFO_3}
+			,SUPLMT_INFO_4=#{SUPLMT_INFO_4}
+			,SUPLMT_INFO_5=#{SUPLMT_INFO_5}
+			,SUPLMT_INFO_6=#{SUPLMT_INFO_6}
+			,SUPLMT_INFO_7=#{SUPLMT_INFO_7}
+			,SUPLMT_INFO_8=#{SUPLMT_INFO_8}
+			,SUPLMT_INFO_9=#{SUPLMT_INFO_9}
+			,SUPLMT_INFO_10=#{SUPLMT_INFO_10}
+			,MODID=#{_USER_INFO.USER_ID}
+	        ,MODDT=SYSDATE
+	        ,MODIP=#{_USER_INFO.USER_IP}
+	        ,MODMENU=#{_PROG_INFO.MENU_ID}
+	        ,MODPGM=#{_PROG_INFO.PGM_PATH}
+		WHERE CD=#{CD}
+		AND UP_CD=#{UP_CD}
+    </update>
+    <delete id="d01">
+    	DELETE FROM EZ_COMN_CD_M
+    	<where>
+    		AND (CD = #{CD} AND UP_CD = #{UP_CD})
+   			OR UP_CD = #{CD}
+    	</where>
+    </delete>
+</mapper>

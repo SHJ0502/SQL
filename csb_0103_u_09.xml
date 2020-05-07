@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="csb_0103_u_09">
+	<!-- 한글 리스트 조회 -->
+	<select id="s01" resultType="map">
+		SELECT WD_CD
+			,WD
+		FROM TEST_COMN_CD_M_T09
+		WHERE LANG_CD = 'ko_KR'
+		AND WD_CD LIKE '%'||#{KEY_WORD}||'%'
+		OR WD LIKE '%'||#{KEY_WORD}||'%'
+		ORDER BY WD_CD
+    </select>
+    
+    <!-- 상세조회 -->
+    <select id="s02" resultType="map">
+    	SELECT A.LANG_CD
+			,#{WD_CD} AS WD_CD
+			,B.WD AS WD
+			,B.RMARK AS RMARK
+		FROM (
+			SELECT A.CD AS LANG_CD
+				,A.SORT_SEQ
+			FROM TEST_COMN_CD_M_T91 A
+			WHERE A.UP_CD = 'SYSTEM:LNG'
+			AND A.USE_YN = 1
+		) A
+		LEFT JOIN TEST_COMN_CD_M_T09 B
+		ON A.LANG_CD = B.LANG_CD
+		AND B.WD_CD = #{WD_CD}
+		ORDER BY A.SORT_SEQ, A.LANG_CD
+    </select>
+    
+    <!-- 메인리스트 인서트 -->
+    <insert id="i01">
+    	INSERT INTO TEST_COMN_CD_M_T09 (
+			LANG_CD
+			,WD_CD
+			,WD
+			,RMARK
+			,REGID
+         	,REGDT
+   	     	,REGIP
+         	,REGMENU
+         	,REGPGM
+         	,MODID
+         	,MODDT
+         	,MODIP
+         	,MODMENU
+         	,MODPGM
+		) VALUES (
+			'ko_KR'
+			,#{WD_CD}
+			,' '
+			,''
+			,#{_USER_INFO.USER_ID}
+         	,SYSDATE
+         	,#{_USER_INFO.USER_IP}
+         	,#{_PROG_INFO.MENU_ID}
+         	,#{_PROG_INFO.PGM_PATH}
+         	,#{_USER_INFO.USER_ID}
+         	,SYSDATE
+         	,#{_USER_INFO.USER_IP}
+         	,#{_PROG_INFO.MENU_ID}
+         	,#{_PROG_INFO.PGM_PATH}
+		)
+    </insert>
+    
+    <!-- 상세에 데이터가 존재하면 업데이트 존재하지 않으면 인서트 -->
+    <update id="u01">
+    	MERGE INTO TEST_COMN_CD_M_T09
+    		USING DUAL
+    		ON (LANG_CD = #{LANG_CD} AND WD_CD = #{WD_CD})
+    	WHEN MATCHED THEN
+    		UPDATE
+    		SET WD=#{WD}
+    			,RMARK=#{RMARK}
+    			,MODID=#{_USER_INFO.USER_ID}
+		        ,MODDT=SYSDATE
+		        ,MODIP=#{_USER_INFO.USER_IP}
+		        ,MODMENU=#{_PROG_INFO.MENU_ID}
+		        ,MODPGM=#{_PROG_INFO.PGM_PATH}
+		WHEN NOT MATCHED THEN
+			INSERT (
+				LANG_CD
+				,WD_CD
+				,WD
+				,RMARK
+				,REGID
+		        ,REGDT
+		        ,REGIP
+		        ,REGMENU
+		        ,REGPGM
+		        ,MODID
+		        ,MODDT
+		        ,MODIP
+		        ,MODMENU
+		        ,MODPGM
+			) VALUES (
+				#{LANG_CD}
+				,#{WD_CD}
+				,#{WD}
+				,#{RMARK}
+				,#{_USER_INFO.USER_ID}
+        		,SYSDATE
+         		,#{_USER_INFO.USER_IP}
+         		,#{_PROG_INFO.MENU_ID}
+         		,#{_PROG_INFO.PGM_PATH}
+         		,#{_USER_INFO.USER_ID}
+         		,SYSDATE
+         		,#{_USER_INFO.USER_IP}
+         		,#{_PROG_INFO.MENU_ID}
+         		,#{_PROG_INFO.PGM_PATH}
+			)
+    </update>
+    <delete id="d01">
+    	DELETE FROM TEST_COMN_CD_M_T09
+		WHERE WD_CD=#{WD_CD}
+		OR	(LANG_CD=#{LANG_CD} and WD_CD=#{WD_CD})
+    </delete>
+</mapper>
